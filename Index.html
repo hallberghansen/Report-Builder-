@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rapport Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            color: #202123;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #ffffff;
+            padding: 10px 15px;
+            border-bottom: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1001;
+        }
+        .top-bar .menu-icon {
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .top-bar .title {
+            font-size: 24px;
+            font-weight: bold;
+            flex: 1;
+            text-align: center;
+        }
+        .hamburger-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100%;
+            background-color: #ffffff;
+            border-right: 1px solid #ddd;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            padding-top: 50px;
+        }
+        .hamburger-menu a {
+            display: block;
+            padding: 15px 25px;
+            color: #202123;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        .hamburger-menu a:hover {
+            background-color: #f0f0f0;
+        }
+        .menu-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+        .page-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: none;
+        }
+        .page-content.active {
+            display: block;
+        }
+        .section-title {
+            background-color: #e5e5e5;
+            color: #202123;
+            padding: 10px;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            background-color: #f5f5f5;
+            color: #202123;
+            border-radius: 5px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            display: none;
+        }
+        .btn-group {
+            display: flex;
+            gap: 5px;
+        }
+        .btn {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #202123;
+            color: #ffffff;
+            border: none;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #3e3f4b;
+        }
+        .full-width-btn {
+            width: 100%;
+            margin-top: 10px;
+            background-color: #202123;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .full-width-btn:hover {
+            background-color: #3e3f4b;
+        }
+        .input-list, .template-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .input-list-item, .template-list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #e5e5e5;
+            margin-top: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .template-list-item:hover, .input-list-item:hover {
+            background-color: #ccc;
+        }
+        .how-to-use {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #333;
+        }
+        .how-to-use h3 {
+            margin-top: 0;
+        }
+        .email-section {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .email-section label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .email-section input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="top-bar">
+    <span class="menu-icon" onclick="toggleHamburgerMenu()">&#9776;</span>
+    <span class="title">Report Generator</span>
+</div>
+
+<!-- Hamburger Menu -->
+<div id="hamburger-menu" class="hamburger-menu">
+    <a href="#page-home" onclick="navigateTo('page-home')">Home</a>
+    <a href="#page-template-manager" onclick="navigateTo('page-template-manager')">Template Manager</a>
+    <a href="#page-input" onclick="navigateTo('page-input')">Input Management</a>
+    <a href="#page-saved-templates" onclick="navigateTo('page-saved-templates')">Saved Templates</a>
+</div>
+
+<!-- Menu Overlay -->
+<div id="menu-overlay" class="menu-overlay" onclick="closeHamburgerMenu()"></div>
+
+<!-- Home Page -->
+<div id="page-home" class="page-content active">
+    <h1>Report Generator</h1>
+</div>
+
+<!-- Template Manager Page -->
+<div id="page-template-manager" class="page-content">
+    <h1>Template Manager</h1>
+
+    <!-- Sections -->
+    <div id="sections-container">
+        <!-- Sections will be added dynamically here -->
+    </div>
+
+    <!-- Button to Add New Section -->
+    <button class="full-width-btn" onclick="addSection()">Add New Section</button>
+
+    <!-- Save Template Button -->
+    <button class="full-width-btn" onclick="saveTemplate()">Save Template</button>
+
+    <!-- Generated Report -->
+    <h2>Generated Report</h2>
+    <div id="report-output">
+        <div id="report-content"></div>
+        <button class="full-width-btn" onclick="removeLastEntry()">Delete Text</button>
+    </div>
+
+    <!-- Email Section -->
+    <div class="email-section">
+        <label for="email">Send Report via Email:</label>
+        <input type="email" id="email" placeholder="Enter email address">
+        <button class="full-width-btn" onclick="sendEmail()">Send Email</button>
+    </div>
+
+    <!-- How to Use Template Manager -->
+    <div class="how-to-use">
+        <h3>How to Use Template Manager</h3>
+        <p>
+            This is where you build your report. Click "Add New Section" to add parts of your report. Write your text and save your work as a template to use it later.
+        </p>
+    </div>
+</div>
+
+<!-- Input Management Page -->
+<div id="page-input" class="page-content">
+    <h1>Input Management</h1>
+
+    <!-- Input Sections -->
+    <div id="input-sections-container">
+        <!-- Input sections will be added dynamically here -->
+    </div>
+
+    <!-- Button to Add New Input -->
+    <button class="full-width-btn" onclick="addInputSection()">Add Input Section</button>
+
+    <!-- How to Use Input Management -->
+    <div class="how-to-use">
+        <h3>How to Use Input Management</h3>
+        <p>
+            Make inputs like names or dates here. These inputs can be used in your reports.
+            Name your Inputbox and add text to the box. Go to the template section. If you add brackets { } to the text with the name of the Inputbox, the Go to the template section. If you add brackets { } to the text with the name of the Inputbox, the text from the box will show in the text.
+        </p>
+    </div>
+</div>
+
+<!-- Saved Templates Page -->
+<div id="page-saved-templates" class="page-content">
+    <h1>Saved Templates</h1>
+
+    <!-- Template List -->
+    <ul id="template-list" class="template-list"></ul>
+
+    <!-- How to Use Saved Templates -->
+    <div class="how-to-use">
+        <h3>How to Use Saved Templates</h3>
+        <p>
+            Here are the templates you've saved. Click one to load it into the Template Manager, where you can use or change it.
+        </p>
+    </div>
+</div>
+
+<script>
+    let sectionCount = 0;
+    let inputs = {};
+    let savedTemplates = [];
+
+    function toggleHamburgerMenu() {
+        const menu = document.getElementById('hamburger-menu');
+        const overlay = document.getElementById('menu-overlay');
+        if (menu.style.display === 'block') {
+            menu.style.display = 'none';
+            overlay.style.display = 'none';
+        } else {
+            menu.style.display = 'block';
+            overlay.style.display = 'block';
+        }
+    }
+
+    function closeHamburgerMenu() {
+        const menu = document.getElementById('hamburger-menu');
+        const overlay = document.getElementById('menu-overlay');
+        menu.style.display = 'none';
+        overlay.style.display = 'none';
+    }
+
+    function navigateTo(pageId) {
+        document.querySelectorAll('.page-content').forEach(page => {
+            page.classList.remove('active');
+        });
+        document.getElementById(pageId).classList.add('active');
+        closeHamburgerMenu();
+    }
+
+    function toggleTextarea(id) {
+        const textarea = document.getElementById(id);
+        textarea.style.display = textarea.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function addSection() {
+        const sectionName = prompt('Enter the name for the new section:');
+        if (sectionName) {
+            sectionCount++;
+            const sectionId = `section-${sectionCount}`;
+            const textareaId = `text-${sectionCount}`;
+            const sectionDiv = document.createElement('div');
+            sectionDiv.className = 'section';
+            sectionDiv.id = sectionId;
+            sectionDiv.innerHTML = `
+                <div class="section-title" onclick="toggleTextarea('${textareaId}')">
+                    ${sectionName}
+                    <div class="btn-group">
+                        <button class="btn remove-btn" onclick="confirmRemove('${sectionId}'); event.stopPropagation();">-</button>
+                        <button class="btn add-btn" onclick="addToReport('${textareaId}'); event.stopPropagation();">+</button>
+                    </div>
+                </div>
+                <textarea id="${textareaId}" rows="4"></textarea>
+            `;
+            document.getElementById('sections-container').appendChild(sectionDiv);
+        }
+    }
+
+    function confirmRemove(id) {
+        const confirmation = confirm('Are you sure you want to remove this section?');
+        if (confirmation) removeSection(id);
+    }
+
+    function removeSection(id) {
+        const section = document.getElementById(id);
+        if (section) section.remove();
+    }
+
+    function addInputSection() {
+        const inputName = prompt('Enter the name for the new input:');
+        if (inputName) {
+            inputs[inputName] = "";
+            updateInputSections();
+        }
+    }
+
+    function updateInputSections() {
+        const inputSectionsContainer = document.getElementById('input-sections-container');
+        inputSectionsContainer.innerHTML = '';
+
+        Object.keys(inputs).forEach((inputName) => {
+            const sectionDiv = document.createElement('div');
+            sectionDiv.className = 'section';
+            sectionDiv.innerHTML = `
+                <div class="section-title" onclick="toggleTextarea('input-text-${inputName}')">
+                    ${inputName}
+                    <div class="btn-group">
+                        <button class="btn remove-btn" onclick="removeInputSection('${inputName}')">-</button>
+                    </div>
+                </div>
+                <textarea id="input-text-${inputName}" rows="2" oninput="updateInputValue('${inputName}', this.value)" style="display:none;"></textarea>
+            `;
+            inputSectionsContainer.appendChild(sectionDiv);
+        });
+    }
+
+    function removeInputSection(inputName) {
+        delete inputs[inputName];
+        updateInputSections();
+    }
+
+    function updateInputValue(inputName, value) {
+        inputs[inputName] = value;
+    }
+
+    function addToReport(textareaId) {
+        let textareaContent = document.getElementById(textareaId).value;
+        const placeholders = textareaContent.match(/{[^}]+}/g);
+
+        if (placeholders) {
+            placeholders.forEach((placeholder) => {
+                const placeholderName = placeholder.replace(/[{}]/g, '');
+                if (inputs.hasOwnProperty(placeholderName)) {
+                    textareaContent = textareaContent.replace(placeholder, inputs[placeholderName]);
+                } else {
+                    alert(`Input ${placeholderName} does not exist!`);
+                }
+            });
+        }
+
+        addTextToReport(textareaContent);
+    }
+
+    function addTextToReport(finalText) {
+        const reportContent = document.getElementById('report-content');
+        const p = document.createElement('p');
+        p.textContent = finalText;
+        reportContent.appendChild(p);
+    }
+
+    function removeLastEntry() {
+        const reportContent = document.getElementById('report-content');
+        const lastEntry = reportContent.lastElementChild;
+        if (lastEntry) lastEntry.remove();
+    }
+
+    function saveTemplate() {
+        const templateName = prompt('Enter the name for the template:');
+        if (!templateName) return;
+
+        const template = { sections: [] };
+        document.querySelectorAll('.section').forEach(section => {
+            const textarea = section.querySelector('textarea');
+            const title = section.querySelector('.section-title').innerText.trim();
+            template.sections.push({ title, text: textarea.value });
+        });
+
+        savedTemplates.push({ name: templateName, content: template });
+        updateTemplateList();
+        alert(`Template '${templateName}' saved!`);
+    }
+
+    function updateTemplateList() {
+        const templateList = document.getElementById('template-list');
+        templateList.innerHTML = '';
+
+        savedTemplates.forEach((template, index) => {
+            const listItem = document.createElement('li');
+            listItem.className = 'template-list-item';
+            listItem.textContent = template.name;
+            listItem.onclick = () => loadTemplate(index);
+            templateList.appendChild(listItem);
+        });
+    }
+
+    function loadTemplate(index) {
+        const template = savedTemplates[index];
+        if (template) {
+            document.getElementById('sections-container').innerHTML = '';
+            sectionCount = 0;
+
+            template.content.sections.forEach(section => {
+                sectionCount++;
+                const sectionId = `section-${sectionCount}`;
+                const textareaId = `text-${sectionCount}`;
+                const sectionDiv = document.createElement('div');
+                sectionDiv.className = 'section';
+                sectionDiv.id = sectionId;
+                sectionDiv.innerHTML = `
+                    <div class="section-title" onclick="toggleTextarea('${textareaId}')">
+                        ${section.title}
+                        <div class="btn-group">
+                            <button class="btn remove-btn" onclick="confirmRemove('${sectionId}'); event.stopPropagation();">-</button>
+                            <button class="btn add-btn" onclick="addToReport('${textareaId}'); event.stopPropagation();">+</button>
+                        </div>
+                    </div>
+                    <textarea id="${textareaId}" rows="4">${section.text}</textarea>
+                `;
+                document.getElementById('sections-container').appendChild(sectionDiv);
+            });
+
+            alert(`Template '${template.name}' loaded!`);
+
+            // Automatically navigate to the Template Manager section
+            navigateTo('page-template-manager');
+        }
+    }
+
+    function initializeDefaultTemplate() {
+        const defaultTemplate = {
+            name: 'Default Report',
+            content: {
+                sections: [
+                    { title: 'Anmeldelse', text: '' },
+                    { title: 'Egne iagttagelser', text: '' },
+                    { title: 'Gerningssteds beskrivelse', text: '' },
+                    { title: 'Gerningssteds undersøgelse', text: '' },
+                    { title: 'Egne dispositioner', text: '' }
+                ]
+            }
+        };
+        savedTemplates.push(defaultTemplate);
+        updateTemplateList();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Initialize input list and templates if saved in localStorage
+        if (localStorage.getItem('inputs')) {
+            inputs = JSON.parse(localStorage.getItem('inputs'));
+            updateInputSections();
+        }
+
+        if (localStorage.getItem('savedTemplates')) {
+            savedTemplates = JSON.parse(localStorage.getItem('savedTemplates'));
+            updateTemplateList();
+        } else {
+            initializeDefaultTemplate();
+        }
+    });
+
+    // Save inputs and templates to localStorage when the page is unloaded or reloaded
+    window.addEventListener('beforeunload', () => {
+        localStorage.setItem('inputs', JSON.stringify(inputs));
+        localStorage.setItem('savedTemplates', JSON.stringify(savedTemplates));
+    });
+
+    function sendEmail() {
+        const email = document.getElementById('email').value;
+        const reportContent = document.getElementById('report-content').innerText;
+
+      if (!email || !reportContent) {
+            alert('Please provide an email address and ensure the report content is not empty.');
+            return;
+        }
+
+        const mailtoLink = `mailto:${email}?subject=Generated Report&body=${encodeURIComponent(reportContent)}`;
+        window.location.href = mailtoLink;
+    }
+</script>
+
+</body>
+</html>
