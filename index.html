@@ -188,6 +188,17 @@
             border: 1px solid #ddd;
             border-radius: 5px;
         }
+        .landing-text {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 50px;
+            text-align: center;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -195,15 +206,15 @@
 <!-- Top Bar -->
 <div class="top-bar">
     <span class="menu-icon" onclick="toggleHamburgerMenu()">&#9776;</span>
-    <span class="title">Report Generator</span>
+    <span class="title">Rapport Generator</span>
 </div>
 
 <!-- Hamburger Menu -->
 <div id="hamburger-menu" class="hamburger-menu">
-    <a href="#page-home" onclick="navigateTo('page-home')">Home</a>
-    <a href="#page-template-manager" onclick="navigateTo('page-template-manager')">Template Manager</a>
-    <a href="#page-input" onclick="navigateTo('page-input')">Input Management</a>
-    <a href="#page-saved-templates" onclick="navigateTo('page-saved-templates')">Saved Templates</a>
+    <a href="#page-home" onclick="navigateTo('page-home')">Hjem</a>
+    <a href="#page-template-manager" onclick="navigateTo('page-template-manager')">Skabelonstyring</a>
+    <a href="#page-input" onclick="navigateTo('page-input')">Inputstyring</a>
+    <a href="#page-saved-templates" onclick="navigateTo('page-saved-templates')">Gemte Skabeloner</a>
 </div>
 
 <!-- Menu Overlay -->
@@ -211,50 +222,103 @@
 
 <!-- Home Page -->
 <div id="page-home" class="page-content active">
-    <h1>Report Generator</h1>
+    <div class="landing-text">
+        <h2>Velkommen til Rapport Generator!</h2>
+        <p>Opret professionelle, tilpassede rapporter nemt. 
+        
+        Start med at opbygge dine rapportskabeloner, administrer dynamiske input, og gem dit arbejde til senere brug. 
+        
+        </p>Med vores værktøj kan du hurtigt generere rapporter og sende dem direkte via e-mail.</p>
+        <p>Udforsk Skabelonstyring for at opbygge din rapport, og brug Inputstyring til at indsætte specifikke detaljer som navne, datoer eller lokationer. 
+        
+        </p>Dit arbejde gemmes automatisk, så du kan fortsætte, hvor du slap. </p>Klar til at komme i gang? Brug menuen til at navigere!</p>
+    </div>
 </div>
 
 <!-- Template Manager Page -->
 <div id="page-template-manager" class="page-content">
-    <h1>Template Manager</h1>
+    <h1>Skabelonstyring</h1>
 
     <!-- Sections -->
     <div id="sections-container">
-        <!-- Sections will be added dynamically here -->
+        <div class="section-title" onclick="toggleTextarea('text-anmeldelse')">
+            Anmeldelse
+            <div class="btn-group">
+                <button class="btn remove-btn" onclick="alert('Denne sektion kan ikke fjernes.'); event.stopPropagation();">-</button>
+                <button class="btn add-btn" onclick="addToReport('text-anmeldelse'); event.stopPropagation();">+</button>
+            </div>
+        </div>
+        <textarea id="text-anmeldelse" rows="4"></textarea>
+
+        <div class="section-title" onclick="toggleTextarea('text-iagttagelser')">
+            Egne iagttagelser
+            <div class="btn-group">
+                <button class="btn remove-btn" onclick="alert('Denne sektion kan ikke fjernes.'); event.stopPropagation();">-</button>
+                <button class="btn add-btn" onclick="addToReport('text-iagttagelser'); event.stopPropagation();">+</button>
+            </div>
+        </div>
+        <textarea id="text-iagttagelser" rows="4"></textarea>
+
+      <div class="section-title" onclick="toggleTextarea('text-beskrivelse')">
+            Gerningssteds beskrivelse
+            <div class="btn-group">
+                <button class="btn remove-btn" onclick="alert('Denne sektion kan ikke fjernes.'); event.stopPropagation();">-</button>
+                <button class="btn add-btn" onclick="addToReport('text-beskrivelse'); event.stopPropagation();">+</button>
+            </div>
+        </div>
+        <textarea id="text-beskrivelse" rows="4"></textarea>
+
+        <div class="section-title" onclick="toggleTextarea('text-undersøgelse')">
+            Gerningssteds undersøgelse
+            <div class="btn-group">
+                <button class="btn remove-btn" onclick="alert('Denne sektion kan ikke fjernes.'); event.stopPropagation();">-</button>
+                <button class="btn add-btn" onclick="addToReport('text-undersøgelse'); event.stopPropagation();">+</button>
+            </div>
+        </div>
+        <textarea id="text-undersøgelse" rows="4"></textarea>
+
+        <div class="section-title" onclick="toggleTextarea('text-dispositioner')">
+            Egne dispositioner
+            <div class="btn-group">
+                <button class="btn remove-btn" onclick="alert('Denne sektion kan ikke fjernes.'); event.stopPropagation();">-</button>
+                <button class="btn add-btn" onclick="addToReport('text-dispositioner'); event.stopPropagation();">+</button>
+            </div>
+        </div>
+        <textarea id="text-dispositioner" rows="4"></textarea>
     </div>
 
     <!-- Button to Add New Section -->
-    <button class="full-width-btn" onclick="addSection()">Add New Section</button>
+    <button class="full-width-btn" onclick="addSection()">Tilføj Ny Sektion</button>
 
     <!-- Save Template Button -->
-    <button class="full-width-btn" onclick="saveTemplate()">Save Template</button>
+    <button class="full-width-btn" onclick="saveTemplate()">Gem Skabelon</button>
 
     <!-- Generated Report -->
-    <h2>Generated Report</h2>
+    <h2>Genereret Rapport</h2>
     <div id="report-output">
         <div id="report-content"></div>
-        <button class="full-width-btn" onclick="removeLastEntry()">Delete Text</button>
+        <button class="full-width-btn" onclick="removeLastEntry()">Slet Tekst</button>
     </div>
 
     <!-- Email Section -->
     <div class="email-section">
-        <label for="email">Send Report via Email:</label>
-        <input type="email" id="email" placeholder="Enter email address">
-        <button class="full-width-btn" onclick="sendEmail()">Send Email</button>
+        <label for="email">Send Rapport via E-mail:</label>
+        <input type="email" id="email" placeholder="Indtast e-mailadresse">
+        <button class="full-width-btn" onclick="sendEmail()">Send E-mail</button>
     </div>
 
     <!-- How to Use Template Manager -->
     <div class="how-to-use">
-        <h3>How to Use Template Manager</h3>
+        <h3>Sådan Bruges Skabelonstyring</h3>
         <p>
-            This is where you build your report. Click "Add New Section" to add parts of your report. Write your text and save your work as a template to use it later.
+            Byg din rapport. Klik på "Tilføj Ny Sektion" for at tilføje dele af din rapport. </p>Skriv din tekst, og gem dit arbejde som en skabelon, som du kan bruge senere.
         </p>
     </div>
 </div>
 
 <!-- Input Management Page -->
 <div id="page-input" class="page-content">
-    <h1>Input Management</h1>
+    <h1>Inputstyring</h1>
 
     <!-- Input Sections -->
     <div id="input-sections-container">
@@ -262,30 +326,30 @@
     </div>
 
     <!-- Button to Add New Input -->
-    <button class="full-width-btn" onclick="addInputSection()">Add Input Section</button>
+    <button class="full-width-btn" onclick="addInputSection()">Tilføj Input Sektion</button>
 
     <!-- How to Use Input Management -->
     <div class="how-to-use">
-        <h3>How to Use Input Management</h3>
+        <h3>Sådan Bruges Inputstyring</h3>
         <p>
-            Make inputs like names or dates here. These inputs can be used in your reports.
-            Name your Inputbox and add text to the box. Go to the template section. If you add brackets { } to the text with the name of the Inputbox, the Go to the template section. If you add brackets { } to the text with the name of the Inputbox, the text from the box will show in the text.
+            Opret inputbokse og navngiv dem her.</p> Dine input kan bruges i dine rapporter. </p> Navngiv din inputboks og tilføj tekst til boksen. </p>Gå til skabelonsektionen.</p> Teksten fra inputboksen kan nu bruges i feltet hvis du gør følgende. </p>Skriv navnet på din inputboks inde i krøllede paranteser eksempel: {navn}. </p>Det er vigigt, at navnet fra inputboksen er præcis det samme. Dvs har du brugt store bokstaver skal du også gøre det inde i de krøllede paranteser.
+      
         </p>
     </div>
 </div>
 
 <!-- Saved Templates Page -->
 <div id="page-saved-templates" class="page-content">
-    <h1>Saved Templates</h1>
+    <h1>Gemte Skabeloner</h1>
 
     <!-- Template List -->
     <ul id="template-list" class="template-list"></ul>
 
     <!-- How to Use Saved Templates -->
     <div class="how-to-use">
-        <h3>How to Use Saved Templates</h3>
+        <h3>Sådan Bruges Gemte Skabeloner</h3>
         <p>
-            Here are the templates you've saved. Click one to load it into the Template Manager, where you can use or change it.
+            Her er de skabeloner, du har gemt. Klik på en for at indlæse den i Skabelonstyring, hvor du kan bruge eller ændre den.
         </p>
     </div>
 </div>
@@ -328,7 +392,7 @@
     }
 
     function addSection() {
-        const sectionName = prompt('Enter the name for the new section:');
+        const sectionName = prompt('Indtast navnet på den nye sektion:');
         if (sectionName) {
             sectionCount++;
             const sectionId = `section-${sectionCount}`;
@@ -351,7 +415,7 @@
     }
 
     function confirmRemove(id) {
-        const confirmation = confirm('Are you sure you want to remove this section?');
+        const confirmation = confirm('Er du sikker på, at du vil fjerne denne sektion?');
         if (confirmation) removeSection(id);
     }
 
@@ -361,7 +425,7 @@
     }
 
     function addInputSection() {
-        const inputName = prompt('Enter the name for the new input:');
+        const inputName = prompt('Indtast navnet på det nye input:');
         if (inputName) {
             inputs[inputName] = "";
             updateInputSections();
@@ -407,7 +471,7 @@
                 if (inputs.hasOwnProperty(placeholderName)) {
                     textareaContent = textareaContent.replace(placeholder, inputs[placeholderName]);
                 } else {
-                    alert(`Input ${placeholderName} does not exist!`);
+                    alert(`Input ${placeholderName} findes ikke!`);
                 }
             });
         }
@@ -423,13 +487,13 @@
     }
 
     function removeLastEntry() {
-        const reportContent = document.getElementById('report-content');
+        const reportContent = document.getElementById
         const lastEntry = reportContent.lastElementChild;
         if (lastEntry) lastEntry.remove();
     }
 
     function saveTemplate() {
-        const templateName = prompt('Enter the name for the template:');
+        const templateName = prompt('Indtast navnet på skabelonen:');
         if (!templateName) return;
 
         const template = { sections: [] };
@@ -441,7 +505,7 @@
 
         savedTemplates.push({ name: templateName, content: template });
         updateTemplateList();
-        alert(`Template '${templateName}' saved!`);
+        alert(`Skabelon '${templateName}' gemt!`);
     }
 
     function updateTemplateList() {
@@ -483,16 +547,16 @@
                 document.getElementById('sections-container').appendChild(sectionDiv);
             });
 
-            alert(`Template '${template.name}' loaded!`);
+            alert(`Skabelon '${template.name}' indlæst!`);
 
-            // Automatically navigate to the Template Manager section
+            // Automatisk navigere til Skabelonstyring sektionen
             navigateTo('page-template-manager');
         }
     }
 
     function initializeDefaultTemplate() {
         const defaultTemplate = {
-            name: 'Default Report',
+            name: 'Standardrapport',
             content: {
                 sections: [
                     { title: 'Anmeldelse', text: '' },
@@ -503,14 +567,49 @@
                 ]
             }
         };
+
+        // Vise standard skabelon i Skabelonstyring
+        document.getElementById('sections-container').innerHTML = '';
+        defaultTemplate.content.sections.forEach(section => {
+            sectionCount++;
+            const sectionId = `section-${sectionCount}`;
+            const textareaId = `text-${sectionCount}`;
+            const sectionDiv = document.createElement('div');
+            sectionDiv.className = 'section';
+            sectionDiv.id = sectionId;
+            sectionDiv.innerHTML = `
+                <div class="section-title" onclick="toggleTextarea('${textareaId}')">
+                    ${section.title}
+                    <div class="btn-group">
+                        <button class="btn remove-btn" onclick="alert('Denne sektion kan ikke fjernes.'); event.stopPropagation();">-</button>
+                        <button class="btn add-btn" onclick="addToReport('${textareaId}'); event.stopPropagation();">+</button>
+                    </div>
+                </div>
+                <textarea id="${textareaId}" rows="4"></textarea>
+            `;
+            document.getElementById('sections-container').appendChild(sectionDiv);
+        });
+
         savedTemplates.push(defaultTemplate);
         updateTemplateList();
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        // Initialize input list and templates if saved in localStorage
+        // Initialiser inputlister og skabeloner, hvis de er gemt i localStorage
         if (localStorage.getItem('inputs')) {
             inputs = JSON.parse(localStorage.getItem('inputs'));
+            updateInputSections();
+        } else {
+            // Tilføj standard input sektioner
+            inputs = {
+                'Anmelderen': '',
+                'Vidne': '',
+                'FOU': '',
+                'Sigtede': '',
+                'Part1': '',
+                'Part2': '',
+                'Dato': ''
+            };
             updateInputSections();
         }
 
@@ -522,7 +621,7 @@
         }
     });
 
-    // Save inputs and templates to localStorage when the page is unloaded or reloaded
+    // Gem input og skabeloner til localStorage, når siden forlades eller opdateres
     window.addEventListener('beforeunload', () => {
         localStorage.setItem('inputs', JSON.stringify(inputs));
         localStorage.setItem('savedTemplates', JSON.stringify(savedTemplates));
@@ -532,12 +631,12 @@
         const email = document.getElementById('email').value;
         const reportContent = document.getElementById('report-content').innerText;
 
-      if (!email || !reportContent) {
-            alert('Please provide an email address and ensure the report content is not empty.');
+        if (!email || !reportContent) {
+            alert('Angiv venligst en e-mailadresse, og sørg for, at rapportindholdet ikke er tomt.');
             return;
         }
 
-        const mailtoLink = `mailto:${email}?subject=Generated Report&body=${encodeURIComponent(reportContent)}`;
+        const mailtoLink = `mailto:${email}?subject=Genereret Rapport&body=${encodeURIComponent(reportContent)}`;
         window.location.href = mailtoLink;
     }
 </script>
